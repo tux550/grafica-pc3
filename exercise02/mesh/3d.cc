@@ -53,11 +53,11 @@ namespace mesh{
 
   Face3D::Face3D(const std::vector<Vertex3D>& vertices):
     vertices(vertices),
-    r(0), g(0), b(0) {}
+    r(255), g(255), b(255) {}
 
   Face3D::Face3D() :
     vertices({}),
-    r(0), g(0), b(0) {}
+    r(255), g(255), b(255) {}
 
   Face3D::Face3D(const std::vector<Vertex3D>& vertices, int r, int g, int b) :
     vertices(vertices),
