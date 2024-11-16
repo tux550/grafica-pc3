@@ -1,0 +1,6 @@
+*.ply
+*.out
+*.exe
+*.off
+!sample.ply
+!sample.off
