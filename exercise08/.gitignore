@@ -2,5 +2,6 @@
 *.out
 *.exe
 *.off
+*.pgm
 !sample.ply
 !sample.off

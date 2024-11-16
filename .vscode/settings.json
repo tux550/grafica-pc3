@@ -78,6 +78,7 @@
     "xlocmon": "cpp",
     "xloctime": "cpp",
     "deque": "cpp",
-    "stack": "cpp"
+    "stack": "cpp",
+    "random": "cpp"
   }
 }

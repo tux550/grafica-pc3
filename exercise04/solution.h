@@ -10,5 +10,6 @@
 void sphere_with_triangular_faces(
   std::string const& full_path_output_file,
   double radius,
-  double center_x, double center_y, double center_z
+  double center_x, double center_y, double center_z,
+  int step_size = 1
 );

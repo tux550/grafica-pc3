@@ -3,7 +3,8 @@
 void sphere_with_triangular_faces(
   std::string const& full_path_output_file,
   double radius,
-  double center_x, double center_y, double center_z
+  double center_x, double center_y, double center_z,
+  int step_size
 ) {
 
   std::vector<mesh::Face3D> faces;
@@ -11,7 +12,6 @@ void sphere_with_triangular_faces(
   auto deg_to_rad = [](double deg) { return deg * M_PI / 180.0; };
   // All integer values of alpha and beta in the range [0, 360)
   
-  int step_size = 1; //1;
 
   for (int alpha = 0; alpha < 360; alpha += step_size) {
     for (int beta = 0; beta < 180; beta += step_size) {
