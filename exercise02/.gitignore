@@ -1,3 +1,4 @@
 *.ply
 *.out
 *.exe
+!sample.ply
