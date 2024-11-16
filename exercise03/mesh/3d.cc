@@ -194,4 +194,18 @@ namespace mesh{
     //Get the intersection point
     return Vertex3D(x_0 + d_x * t, y_0 + d_y * t, z_0 + d_z * t);
   }
+
+  Vertex3D rotate_vertex(Vertex3D& vertex, Line3D& axis_of_rotation, double alpha_rads) {
+    // Normalize the axis of rotation (direction)
+    Vertex3D k = axis_of_rotation.direction / std::sqrt(dot_product(axis_of_rotation.direction, axis_of_rotation.direction));
+
+    // Vector from the point on the axis to the vertex
+    Vertex3D p = vertex - axis_of_rotation.point;
+
+    // Applying Rodrigues' rotation formula
+    Vertex3D p_rot = p * std::cos(alpha_rads) + cross_product(k, p) * std::sin(alpha_rads) + k * dot_product(k, p) * (1 - std::cos(alpha_rads));
+
+    // Return the rotated vertex, offset by the point on the axis
+    return axis_of_rotation.point + p_rot;
+  }
 }

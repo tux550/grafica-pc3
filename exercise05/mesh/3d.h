@@ -56,6 +56,7 @@ namespace mesh{
   };
 
   std::optional<Vertex3D> intersect_lp(const Line3D& l1, const Plane3D& p1);
+  Vertex3D rotate_vertex(Vertex3D& vertex, Line3D& axis_of_rotation, double alpha_rads);
 
 
   struct Face3D {

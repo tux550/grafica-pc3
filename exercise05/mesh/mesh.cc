@@ -7,6 +7,10 @@ namespace mesh{
     texture_file = filename;
   }
 
+  std::string Mesh::get_source_format() {
+    return fileformat;
+  }
+
   // Transform to generic Vertex3D
   Vertex3D Mesh::to_vertex(const MeshVertex& vertex) {
     return vertex;

@@ -1,9 +1,9 @@
 [x] Exercise 01
 [x] Exercise 02
 [~] Exercise 03 # Should we fix degenerated faces
-[] Exercise 04
-[] Exercise 05
-[] Exercise 06
+[x] Exercise 04
+[x] Exercise 05
+[~] Exercise 06 # Check the rotation direction (clockwise or counterclockwise)
 [] Exercise 07
 [] Exercise 08
 [] Exercise 09
