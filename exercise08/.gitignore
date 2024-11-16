@@ -8,4 +8,6 @@
 *.jpg
 *.jpeg
 !sample.ply
+!sample2.ply
 !sample.off
+!sample.png

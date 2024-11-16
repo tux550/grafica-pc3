@@ -8,7 +8,7 @@ TEST(exercise03, sphere_02) {
 }
 
 TEST(exercise03, sphere_03) {
-  sphere_with_triangular_faces("low_res.ply", 2, 0, 1, 10, 18);
+  sphere_with_triangular_faces("low_res.ply", 2, 0, 1, 10, 10);
 }
 
 

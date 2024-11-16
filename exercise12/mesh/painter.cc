@@ -32,6 +32,9 @@ namespace mesh {
     // ilumination factor and distance
     std::vector<std::tuple<mesh::Face2D, double, double>> triangles_ilumination_distance;
 
+    // Light direction
+    mesh::Vertex3D light_direction = {0, 0, 1};
+
     // For each face in the mesh project it to the projection plane
     for (mesh::Face3D & face : mesh.get_faces()) {
       std::optional<mesh::Face2D> face2d = projection_plane.project(face);

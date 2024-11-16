@@ -3,6 +3,8 @@
 #include <iostream>
 #include <fstream>
 #include "mesh.h"
+#include "3d.h"
+#include "film.h"
 #include <opencv2/opencv.hpp>
 
 #ifndef SHARED_MESH_PAINTER_H

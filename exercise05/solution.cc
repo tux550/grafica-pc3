@@ -20,8 +20,8 @@ void sphere_with_texture(
     double theta = std::acos(z / r);
     double phi = std::atan2(y, x);
     // Get the texture coordinates
-    double u = phi / (2 * M_PI);
-    double v = theta / M_PI;
+    double u = (phi+M_PI) / (2 * M_PI); // +M_PI to avoid negative values
+    double v = (M_PI-theta) / M_PI;
     // Set the texture coordinates
     vertex.u = u;
     vertex.v = v;

@@ -14,7 +14,7 @@
 [~] Exercise 11 # Revisar firma de la función
 # Painter's algorithm
 [x] Exercise 12
-[] Exercise 13
+[~] Exercise 13 # Refinar. No se ve bien
 # Simple animation
 [] Exercise 14
 [] Exercise 15 # OPTIONAL

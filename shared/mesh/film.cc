@@ -53,7 +53,7 @@ namespace mesh {
   Point2D ProjectionPlane::project(Vertex3D const& vertex) const {
     double x = vertex.x / vertex.z;
     double y = vertex.y / vertex.z;
-    return {x, y};
+    return {x, y, vertex.u, vertex.v};
   }
 
   std::optional<Face2D> ProjectionPlane::project(Face3D const& face) const {
