@@ -4,8 +4,8 @@
 [x] Exercise 04
 [x] Exercise 05
 [~] Exercise 06 # Check the rotation direction (clockwise or counterclockwise)
-[] Exercise 07
-[] Exercise 08
+[x] Exercise 07 
+[x] Exercise 08
 [] Exercise 09
 [] Exercise 10
 [] Exercise 11

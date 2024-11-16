@@ -8,7 +8,6 @@ void rotate_mesh_around_line(
 ) {
   // Load the input mesh
   mesh::Mesh mesh(full_path_input_mesh);
-  std::cout << "Loaded mesh with " << mesh.get_vertices().size() << " vertices and " << mesh.get_faces().size() << " faces" << std::endl;
   // Convert alpha to radians
   auto alpha_rads = alpha * M_PI / 180;
   // For each vertex get the spherical coordinates
@@ -16,7 +15,6 @@ void rotate_mesh_around_line(
     // Rotate vertex around axis_of_rotation
     vertex = mesh::rotate_vertex(vertex, axis_of_rotation, alpha_rads);
   }
-  std::cout << "Saving mesh with " << mesh.get_vertices().size() << " vertices and " << mesh.get_faces().size() << " faces" << std::endl;
   // Save the mesh in same format as input
   mesh.save(full_path_output_mesh.c_str());
 }
