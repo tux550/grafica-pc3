@@ -2,13 +2,23 @@
 #include <optional>
 #include <math.h>
 #include "3d.h"
+#include "opencv2/opencv.hpp"
 
 #ifndef MESH_FILM_H
 #define MESH_FILM_H
 namespace mesh {
   struct Point2D {
     double x, y;
+    double u = 0, v = 0;
+    Point2D(double x, double y) : x(x), y(y) {}
+    Point2D(double x, double y, double u, double v) : x(x), y(y), u(u), v(v) {}
+
+    Point2D operator-(Point2D const& other) const;
+    Point2D operator+(Point2D const& other) const;
+
   };
+
+  double cross_product(Point2D const& a, Point2D const& b, Point2D const& c);
 
   struct Face2D {
     std::vector<Point2D> vertices;
@@ -52,8 +62,10 @@ namespace mesh {
     Pixel snap_to_pixel(Point2D const& point) const;
     Point2D pixel_center(Pixel const& pixel) const;
     void draw_triangle(Face2D const& face, size_t ilumination);
+    void draw_triangle_with_texture(Face2D const& face, double ilumination, cv::Mat const& texture);
 
     void save_ppm(std::string const& filename) const;
+    void save_png(std::string const& filename) const;
   };
 }
 #endif

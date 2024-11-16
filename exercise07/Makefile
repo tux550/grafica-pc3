@@ -8,7 +8,7 @@ LIB_TARGETS = $(shell find . -path "./mesh/*.cc")
 OUTPUT = solution.out
 
 ## Compile
-COMPILE_FLAGS = -std=c++2a -lgtest -lgtest_main -pthread
+COMPILE_FLAGS = -std=c++2a -lgtest -lgtest_main -pthread `pkg-config --cflags --libs opencv4`
 ## Inlcude flas
 INCLUDE_LIB_FLAGS = -I ./mesh
 

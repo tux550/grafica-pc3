@@ -82,6 +82,7 @@ namespace mesh{
       return;
     }
     // Elements
+    bool has_texture = false;
     std::vector<std::string> elements;
     std::map<std::string, int> element_count;
     std::getline(file, line);
@@ -101,6 +102,9 @@ namespace mesh{
       }
       else if (t1 == "property"){
         // skip
+        if (t3 == "texture_u" || t3 == "texture_v"){
+          has_texture = true;
+        }
       }
       // Read next line
       std::getline(file, line);
@@ -113,7 +117,15 @@ namespace mesh{
           std::istringstream iss(line);
           double x, y, z;
           iss >> x >> y >> z;
-          vertices.push_back(Vertex3D(x, y, z));
+          // If has texture, read texture coordinates
+          if (has_texture){
+            double u, v;
+            iss >> u >> v;
+            vertices.push_back(Vertex3D(x, y, z, u, v));
+          }
+          else {
+            vertices.push_back(Vertex3D(x, y, z));
+          }
         }
       }
       else if (element == "face"){

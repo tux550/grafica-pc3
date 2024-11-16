@@ -1,15 +1,27 @@
 #include "film.h"
 
 namespace mesh {
+  Point2D Point2D::operator-(Point2D const& other) const {
+    return {x - other.x, y - other.y};
+  }
+  Point2D Point2D::operator+(Point2D const& other) const {
+    return {x + other.x, y + other.y};
+  }
+
+  double cross_product(Point2D const& a, Point2D const& b) {
+    return a.x * b.y - a.y * b.x;
+  }
+
   bool Face2D::is_inside(Point2D const& point) const {
     // Check if the point is inside
     // if all cross products have the same sign, the point is inside
     // if at least one cross product has a different sign, the point is outside
-    auto cross_product_sign = [](Point2D const& a, Point2D const& b, Point2D const& c) {
-      return (b.x - a.x) * (c.y - a.y) - (b.y - a.y) * (c.x - a.x);
-    };
     auto same_sign = [](double a, double b) {
       return (a > 0 && b > 0) || (a < 0 && b < 0);
+    };
+
+    auto cross_product_sign = [](Point2D const& a, Point2D const& b, Point2D const& c) {
+      return (b.x - a.x) * (c.y - a.y) - (b.y - a.y) * (c.x - a.x);
     };
     
     // Get first sign
@@ -102,6 +114,59 @@ namespace mesh {
     }
   }
 
+    void ProjectionPlane::draw_triangle_with_texture(Face2D const& face, double ilumination, cv::Mat const& texture) {
+    // Get bounding box
+    double b_min_x = min_x;
+    double b_min_y = min_y;
+    double b_max_x = max_x;
+    double b_max_y = max_y;
+    for (Point2D const& vertex : face.vertices) {
+      b_min_x = std::min(b_min_x, vertex.x);
+      b_min_y = std::min(b_min_y, vertex.y);
+      b_max_x = std::max(b_max_x, vertex.x);
+      b_max_y = std::max(b_max_y, vertex.y);
+    }
+    // Snap to pixels
+    Pixel min_pixel = snap_to_pixel({b_min_x, b_min_y});
+    Pixel max_pixel = snap_to_pixel({b_max_x, b_max_y});
+    // Limit to the screen
+    min_pixel.x = std::max(min_pixel.x, size_t(0));
+    min_pixel.y = std::max(min_pixel.y, size_t(0));
+    max_pixel.x = std::min(max_pixel.x, width_in_pixels - 1);
+    max_pixel.y = std::min(max_pixel.y, height_in_pixels - 1);
+
+    // Draw the triangle
+    for (size_t x = min_pixel.x; x <= max_pixel.x; x++) {
+      for (size_t y = min_pixel.y; y <= max_pixel.y; y++) {
+        Point2D point = pixel_center({x, y});
+        if (face.is_inside(point)) {
+          // Calculate barycentric coordinates
+          Point2D v0v1 = face.vertices[1] - face.vertices[0];
+          Point2D v0v2 = face.vertices[2] - face.vertices[0];
+          Point2D v0p = point - face.vertices[0];
+
+          double area = cross_product(v0v1, v0v2);
+          double alpha = cross_product(v0v2, v0p) / area;
+          double beta = cross_product(v0p, v0v1) / area;
+          double gamma = 1 - alpha - beta;
+
+          // Get texture coordinates
+          double u = alpha * face.vertices[0].u + beta * face.vertices[1].u + gamma * face.vertices[2].u;
+          double v = alpha * face.vertices[0].v + beta * face.vertices[1].v + gamma * face.vertices[2].v;
+
+          // Get texture color
+          size_t texture_x = u * texture.cols;
+          size_t texture_y = v * texture.rows;
+          cv::Vec3b color_cv = texture.at<cv::Vec3b>(texture_y, texture_x);
+          RGB color = {color_cv[2], color_cv[1], color_cv[0]};
+
+          // Draw the pixel
+          image[x][y] = color;
+        }
+      }
+    }
+  }
+
   void ProjectionPlane::save_ppm(std::string const& filename) const {
     std::ofstream file;
     file.open(filename);
@@ -115,6 +180,16 @@ namespace mesh {
       file << "\n";
     }
     file.close();
+  }
+
+  void ProjectionPlane::save_png(std::string const& filename) const {
+    cv::Mat image_cv(height_in_pixels, width_in_pixels, CV_8UC3);
+    for (size_t y = 0; y < height_in_pixels; y++) {
+      for (size_t x = 0; x < width_in_pixels; x++) {
+        image_cv.at<cv::Vec3b>(y, x) = {image[x][y].b, image[x][y].g, image[x][y].r};
+      }
+    }
+    cv::imwrite(filename, image_cv);
   }
 
 }

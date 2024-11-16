@@ -62,5 +62,5 @@ size_t height_in_pixels) {
   }
 
   // Save the image
-  projection_plane.save_ppm(full_path_output_image);
+  projection_plane.save_png(full_path_output_image);
 }
