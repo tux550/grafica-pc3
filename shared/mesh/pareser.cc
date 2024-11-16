@@ -90,7 +90,6 @@ namespace mesh {
     *(z_ptr) = iz;
     // Evaluate the expression
     auto res = expression->value();
-    std::cout << "Result of evaluating x=" << ix << ", y=" << iy << ", z=" << iz << " is " << res << std::endl;
     return res;
     
   }

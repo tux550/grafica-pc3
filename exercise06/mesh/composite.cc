@@ -8,11 +8,6 @@ namespace mesh{
     for (auto& f : functions) {
       values.push_back(f(x, y, z));
     }
-    // COUT all the values
-    for (auto& v : values) {
-      std::cout << v << " ";
-    }
-    std::cout << std::endl;
 
     // "union" performs the union of all the child objects.
     // "intersection" performs the intersection of all the child objects.
