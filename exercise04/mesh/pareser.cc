@@ -64,24 +64,33 @@ namespace mesh {
 
 
 
-  FunctionExpressionEvaluator::FunctionExpressionEvaluator(const std::string& expression_string) : expression_string(expression_string) {}
+  FunctionExpressionEvaluator::FunctionExpressionEvaluator(const std::string& expression_string) {
+    // Init variables
+    x_ptr = std::make_shared<T>(0);
+    y_ptr = std::make_shared<T>(0);
+    z_ptr = std::make_shared<T>(0);
+    // Reserve memory for symbol table and expression
+    expression = std::make_shared<expression_t>();
+    parser = std::make_shared<parser_t>();
+    symbol_table = std::make_shared<symbol_table_t>();
+    // Dummy symbol table
+    symbol_table->add_variable("x",*x_ptr);
+    symbol_table->add_variable("y",*y_ptr);
+    symbol_table->add_variable("z",*z_ptr);
+    // Register the symbol table
+    expression->register_symbol_table(*symbol_table);
+    // Compile the expression
+    parser->compile(expression_string, *expression);
+  }
 
 
   double FunctionExpressionEvaluator::operator()(double ix, double iy, double iz) {
-    symbol_table_t symbol_table;
-    expression_t expression;
-    parser_t parser;
-
-    // Initialize symbol table, parser and expression
-    symbol_table.add_variable("x", ix, true);
-    symbol_table.add_variable("y", iy, true);
-    symbol_table.add_variable("z", iz, true);
-    expression.register_symbol_table(symbol_table);
-    parser.compile(expression_string, expression);
-
+    *(x_ptr) = ix;
+    *(y_ptr) = iy;
+    *(z_ptr) = iz;
     // Evaluate the expression
-    auto res = expression.value();
-    std::cout << "Result of evaluating x=" << ix << ", y=" << iy << ", z=" << iz << " in " << expression_string << " is " << res << std::endl;
+    auto res = expression->value();
+    std::cout << "Result of evaluating x=" << ix << ", y=" << iy << ", z=" << iz << " is " << res << std::endl;
     return res;
     
   }

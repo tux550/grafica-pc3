@@ -27,8 +27,12 @@ namespace mesh {
     typedef exprtk::symbol_table<T> symbol_table_t;
     typedef exprtk::expression<T>   expression_t;
     typedef exprtk::parser<T>       parser_t;
+    // Use pointers to mantain reference
+    std::shared_ptr<expression_t> expression;
+    std::shared_ptr<parser_t> parser;
+    std::shared_ptr<symbol_table_t> symbol_table;
+    std::shared_ptr<T> x_ptr, y_ptr, z_ptr;
 
-    std::string expression_string;
     // Constructor
     public:
     FunctionExpressionEvaluator(const std::string& expression);
