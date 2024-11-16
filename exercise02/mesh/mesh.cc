@@ -1,7 +1,12 @@
 #include "mesh.h"
+#include <string>
 #include <sstream>
 
 namespace mesh{
+  void Mesh::set_texture_file(const std::string& filename) {
+    texture_file = filename;
+  }
+
   // Transform to generic Vertex3D
   Vertex3D Mesh::to_vertex(const MeshVertex& vertex) {
     return vertex;
@@ -145,7 +150,7 @@ namespace mesh{
   }
 
   // Generic getter for vertices
-  std::vector<Vertex3D> Mesh::get_vertices() {
+  std::vector<Vertex3D>& Mesh::get_vertices() {
     return vertices;
   }
   
@@ -168,14 +173,37 @@ namespace mesh{
   }
 
   // === To PLY ===
-  std::string Mesh::get_header() {
-    return "ply\nformat ascii 1.0\nelement vertex " + std::to_string(vertices.size()) + "\nproperty double x\nproperty double y\nproperty double z\nelement face " + std::to_string(faces.size()) + "\nproperty list uchar int vertex_index\nproperty uchar red\nproperty uchar green\nproperty uchar blue\nend_header\n";
+  std::string Mesh::get_header(bool texture_coordinates) {
+    std::string header = "ply\n";
+    header += "format ascii 1.0\n";
+    header += "element vertex " + std::to_string(vertices.size()) + "\n";
+    if (texture_file != "") {
+      header += "comment TextureFile " + texture_file + "\n";
+    }
+    header += "property double x\n";
+    header += "property double y\n";
+    header += "property double z\n";
+    if (texture_coordinates) {
+      header += "property double texture_u\n";
+      header += "property double texture_v\n";
+    }
+    header += "element face " + std::to_string(faces.size()) + "\n";
+    header += "property list uchar int vertex_index\n";
+    header += "property uchar red\n";
+    header += "property uchar green\n";
+    header += "property uchar blue\n";
+    header += "end_header\n";
+    return header;
   }
 
-  std::string Mesh::get_vertex_string() {
+  std::string Mesh::get_vertex_string(bool texture_coordinates) {
     std::string vertex_string = "";
     for (Vertex3D vertex : vertices) {
-      vertex_string += std::to_string(vertex.x) + " " + std::to_string(vertex.y) + " " + std::to_string(vertex.z) + "\n";
+      vertex_string += std::to_string(vertex.x) + " " + std::to_string(vertex.y) + " " + std::to_string(vertex.z);
+      if (texture_coordinates) {
+        vertex_string += " " + std::to_string(vertex.u) + " " + std::to_string(vertex.v);
+      }
+      vertex_string += "\n";
     }
     return vertex_string;
   }
@@ -194,11 +222,11 @@ namespace mesh{
     return face_string;
   }
 
-  void Mesh::save_ply(const char* filename) {
+  void Mesh::save_ply(const char* filename, bool texture_coordinates) {
     std::ofstream file;
     file.open(filename);
-    file << get_header();
-    file << get_vertex_string();
+    file << get_header(texture_coordinates);
+    file << get_vertex_string(texture_coordinates);
     file << get_face_string();
     file.close();
   }

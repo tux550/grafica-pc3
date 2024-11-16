@@ -4,6 +4,8 @@ namespace mesh{
 
   Vertex3D::Vertex3D(double x, double y, double z) :
     x(x), y(y), z(z) {}
+  Vertex3D::Vertex3D(double x, double y, double z, double u, double v) :
+    x(x), y(y), z(z), u(u), v(v) {}
   Vertex3D::Vertex3D() : 
     x(0), y(0), z(0) {}
 

@@ -23,9 +23,11 @@ namespace mesh{
   private:
     std::vector<MeshVertex> vertices;
     std::vector<MeshFace> faces;
+    std::string texture_file = "";
 
-    std::string get_header();
-    std::string get_vertex_string();
+
+    std::string get_header( bool texture_coordinates );
+    std::string get_vertex_string( bool texture_coordinates );
     std::string get_face_string();
 
     Vertex3D to_vertex(const MeshVertex& vertex);
@@ -33,11 +35,11 @@ namespace mesh{
   public:
     Mesh(const std::vector<Face3D>& faces);
     Mesh(const std::string& filename);
-    void save_ply(const char* filename);
+    void save_ply(const char* filename, bool texture_coordinates = false);
 
     int insert_face(const Face3D& face);
     int insert_vertex(const Vertex3D& vertex);
-    std::vector<Vertex3D> get_vertices();
+    std::vector<Vertex3D> &get_vertices();
     Vertex3D get_vertex(int index);
     std::vector<Face3D> get_faces();
     Face3D get_face(int index);
@@ -47,6 +49,8 @@ namespace mesh{
     Vertex3D get_face_midpoint(int face_index);
     void move_point(const Vertex3D& point, const Vertex3D& target);
     void displace(const Vertex3D& v);
+    
+    void set_texture_file(const std::string& filename);
   };
 }
 

@@ -15,7 +15,9 @@ namespace mesh{
 // GENERICS
   struct Vertex3D {
     double x, y, z;
+    double u = 0, v = 0;
     Vertex3D(double x, double y, double z);
+    Vertex3D(double x, double y, double z, double u, double v);
     Vertex3D();
     double magnitude();
     bool operator==(const Vertex3D& other) const;
