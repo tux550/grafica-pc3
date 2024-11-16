@@ -60,6 +60,16 @@ TEST(parser_test, composite_from_file) {
 
 }
 
+TEST(exercise11, algo_marcing_cubes_1) {
+  // Load file example.json
+  marching_cubes("example.json", "output1.off", -10, -10, 10, 10, -10, 10, 1);
+}
+
+TEST(exercise11, algo_marcing_cubes_2) {
+  // Load file example.json
+  marching_cubes("example2.json", "output2.off", -5, -5, 6, 6, -5, 6, 0.1);
+}
+
 int main(int argc, char **argv) {
   testing::InitGoogleTest(&argc, argv);
   return RUN_ALL_TESTS();
