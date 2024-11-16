@@ -10,7 +10,7 @@ TEST(exercise14, sphere_rotation) {
     // Rotate around the z-axis
     0, 0, 0,
     0, 0, 1, 
-    "output"
+    "frames/frame"
   );
 }
 

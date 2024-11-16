@@ -28,13 +28,13 @@ std::string const& filename_without_suffix_output_frames) {
 
   // Constants
   const size_t number_of_frames = 20;
+  const double angle_step = 2 * M_PI / number_of_frames;
 
   for (size_t i = 0; i < number_of_frames; i++) {
     std::cout << "Frame " << i << std::endl;
     // Rotate the mesh
-    double angle = 2 * M_PI * i / number_of_frames;
     for (auto &vertex : mesh.get_vertices()){
-      vertex = mesh::rotate_vertex(vertex,  rotation_line, angle);
+      vertex = mesh::rotate_vertex(vertex,  rotation_line, angle_step);
     }
 
     // Create the output image
