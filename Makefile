@@ -35,5 +35,4 @@ test:
 	done
 
 clean:
-	@find . -name "*.out" -type f -delete
-	@echo "All .out files have been deleted."
+	git clean -Xdf
