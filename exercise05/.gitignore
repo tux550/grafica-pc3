@@ -3,5 +3,9 @@
 *.exe
 *.off
 *.pgm
+*.ppm
+*.png
+*.jpg
+*.jpeg
 !sample.ply
 !sample.off
