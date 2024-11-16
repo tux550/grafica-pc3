@@ -10,8 +10,8 @@
 [] Exercise 08 # Half implemented
 [] Exercise 09
 # Marching squares and cubes
-[] Exercise 10 # OPTIONAL
-[] Exercise 11
+[] Exercise 10 # OPTIONAL # Half implemented
+[] Exercise 11 # Half implemented
 # Painter's algorithm
 [] Exercise 12
 [] Exercise 13
