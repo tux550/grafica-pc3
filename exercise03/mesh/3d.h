@@ -21,6 +21,7 @@ namespace mesh{
     Vertex3D();
     double magnitude();
     bool operator==(const Vertex3D& other) const;
+    bool operator!=(const Vertex3D& other) const;
     bool operator<(const Vertex3D& other) const;
     Vertex3D normalized();
   };

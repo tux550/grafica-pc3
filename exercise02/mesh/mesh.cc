@@ -367,6 +367,34 @@ namespace mesh{
     return faces_with_edge;
   }
 
+  std::vector<Vertex3D> Mesh::get_complementary_vertexes(const Edge3D& edge) {
+    Vertex3D v1 = edge.v1;
+    Vertex3D v2 = edge.v2;
+    std::vector<Face3D> faces_with_edge = get_faces_with_edge(edge);
+    std::vector<Vertex3D> complementary_vertexes;
+    for (Face3D face : faces_with_edge) {
+      for (Vertex3D vertex : face.vertices) {
+        if (vertex != v1 && vertex != v2) {
+          complementary_vertexes.push_back(vertex);
+        }
+      }
+    }
+    return complementary_vertexes;
+  }
+
+  std::map<Vertex3D, std::vector<Vertex3D>> Mesh::get_stars() {
+    std::map<Vertex3D, std::vector<Vertex3D>> stars;
+    for (MeshFace face : faces) {
+      for (int i = 0; i < face.vertices.size(); i++) {
+        Vertex3D v1 = get_vertex(face.vertices[i]);
+        Vertex3D v2 = get_vertex(face.vertices[(i + 1) % face.vertices.size()]);
+        stars[v1].push_back(v2);
+        stars[v2].push_back(v1);
+      }
+    }
+    return stars;
+  }
+
   // Modify mesh
   void Mesh::move_point(const Vertex3D& point, const Vertex3D& target) {
     // Search for the point

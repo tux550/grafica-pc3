@@ -13,6 +13,10 @@ namespace mesh{
     return x == other.x && y == other.y && z == other.z;
   }
 
+  bool Vertex3D::operator!=(const Vertex3D& other) const {
+    return !(*this == other);
+  }
+
   bool Vertex3D::operator<(const Vertex3D& other) const {
     return x < other.x || (x == other.x && y < other.y) || (x == other.x && y == other.y && z < other.z);
   }

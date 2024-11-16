@@ -7,8 +7,8 @@
 [~] Exercise 06 # Check the rotation direction (clockwise or counterclockwise)
 [x] Exercise 07 
 # Catmul-Clark and Loop
-[] Exercise 08 # Half implemented
-[] Exercise 09
+[x] Exercise 08
+[x] Exercise 09
 # Marching squares and cubes
 [] Exercise 10 # OPTIONAL # Half implemented
 [] Exercise 11 # Half implemented
