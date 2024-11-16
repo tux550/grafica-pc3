@@ -16,6 +16,6 @@
 [x] Exercise 12
 [~] Exercise 13 # Refinar. No se ve bien
 # Simple animation
-[] Exercise 14
+[x] Exercise 14 # Refinar. No se ve bien
 [] Exercise 15 # OPTIONAL
 

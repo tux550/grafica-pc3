@@ -12,8 +12,8 @@
 
 namespace mesh {
   void painter_algorithm_with_textures(
-    std::string const& full_path_input_mesh,
-    std::string const& full_path_texture,
+    mesh::Mesh& mesh,
+    cv::Mat& texture_image,
     std::string const& full_path_output_image,
     double min_x_coordinate_in_projection_plane,
     double min_y_coordinate_in_projection_plane,

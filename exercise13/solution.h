@@ -1,8 +1,8 @@
 // Make math constants available
 #define _USE_MATH_DEFINES
 #include <cmath>
-
 #include <string>
+#include "opencv2/opencv.hpp"
 #include "mesh/mesh.h"
 #include "mesh/film.h"
 #include "mesh/painter.h"

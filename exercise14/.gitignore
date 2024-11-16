@@ -1,0 +1,13 @@
+*.ply
+*.out
+*.exe
+*.off
+*.pgm
+*.ppm
+*.png
+*.jpg
+*.jpeg
+!sample.ply
+!sample2.ply
+!sample.off
+!sample.png

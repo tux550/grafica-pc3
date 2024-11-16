@@ -3,13 +3,14 @@
 
 
 
-TEST(exercise13, algo_painter_algorithm_textures) {
-  painter_algorithm_textures(
+TEST(exercise14, sphere_rotation) {
+  frames_of_a_textured_sphere_rotating(
     "sample.ply",
     "sample.png",
-    "output.png",
-    -0.5, -0.5, 0.5, 0.5,
-    400, 400
+    // Rotate around the z-axis
+    0, 0, 0,
+    0, 0, 1, 
+    "output"
   );
 }
 

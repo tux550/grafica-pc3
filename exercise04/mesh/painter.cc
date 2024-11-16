@@ -3,8 +3,8 @@
 
 namespace mesh {
   void painter_algorithm_with_textures(
-    std::string const& full_path_input_mesh,
-    std::string const& full_path_texture,
+    mesh::Mesh& mesh,
+    cv::Mat& texture_image,
     std::string const& full_path_output_image,
     double min_x_coordinate_in_projection_plane,
     double min_y_coordinate_in_projection_plane,
@@ -12,13 +12,6 @@ namespace mesh {
     double max_y_coordinate_in_projection_plane,
     size_t width_in_pixels,
     size_t height_in_pixels) {
-    // Load the mesh
-    mesh::Mesh mesh(full_path_input_mesh);
-
-    // Load matrix texture using opencv
-    cv::Mat texture_image = cv::imread(full_path_texture, cv::IMREAD_COLOR);
-
-
     // Create projection plane
     mesh::ProjectionPlane projection_plane(
       min_x_coordinate_in_projection_plane,

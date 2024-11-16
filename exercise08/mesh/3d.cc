@@ -30,20 +30,21 @@ namespace mesh{
     return Vertex3D(x / norm, y / norm, z / norm);
   }
 
+  // Always prioritize first vertex for texture coordinates
   Vertex3D operator+(const Vertex3D& v1, const Vertex3D& v2) {
-    return Vertex3D(v1.x + v2.x, v1.y + v2.y, v1.z + v2.z);
+    return Vertex3D(v1.x + v2.x, v1.y + v2.y, v1.z + v2.z, v1.u, v1.v);
   }
 
   Vertex3D operator-(const Vertex3D& v1, const Vertex3D& v2) {
-    return Vertex3D(v1.x - v2.x, v1.y - v2.y, v1.z - v2.z);
+    return Vertex3D(v1.x - v2.x, v1.y - v2.y, v1.z - v2.z, v1.u, v1.v);
   }
 
   Vertex3D operator/(const Vertex3D& v1, double scalar) {
-    return Vertex3D(v1.x / scalar, v1.y / scalar, v1.z / scalar);
+    return Vertex3D(v1.x / scalar, v1.y / scalar, v1.z / scalar, v1.u, v1.v);
   }
 
   Vertex3D operator*(const Vertex3D& v1, double scalar) {
-    return Vertex3D(v1.x * scalar, v1.y * scalar, v1.z * scalar);
+    return Vertex3D(v1.x * scalar, v1.y * scalar, v1.z * scalar, v1.u, v1.v);
   }
 
   Vertex3D cross_product(const Vertex3D& v1, const Vertex3D& v2) {
@@ -210,6 +211,13 @@ namespace mesh{
     Vertex3D p_rot = p * std::cos(alpha_rads) + cross_product(k, p) * std::sin(alpha_rads) + k * dot_product(k, p) * (1 - std::cos(alpha_rads));
 
     // Return the rotated vertex, offset by the point on the axis
-    return axis_of_rotation.point + p_rot;
+    p_rot = p_rot + axis_of_rotation.point;
+  
+
+    // Preserve the texture coordinates
+    p_rot.u = vertex.u;
+    p_rot.v = vertex.v;
+
+    return p_rot;
   }
 }

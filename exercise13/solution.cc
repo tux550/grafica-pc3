@@ -12,9 +12,15 @@ double max_x_coordinate_in_projection_plane,
 double max_y_coordinate_in_projection_plane,
 size_t width_in_pixels,
 size_t height_in_pixels){
+  // Load the mesh
+  mesh::Mesh mesh(full_path_input_mesh);
+
+  // Load matrix texture using opencv
+  cv::Mat texture_image = cv::imread(full_path_input_texture, cv::IMREAD_COLOR);
+
   mesh::painter_algorithm_with_textures(
-    full_path_input_mesh,
-    full_path_input_texture,
+    mesh,
+    texture_image,
     full_path_output_image,
     min_x_coordinate_in_projection_plane,
     min_y_coordinate_in_projection_plane,
