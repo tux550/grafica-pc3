@@ -49,6 +49,9 @@ namespace mesh{
     return faces.size() - 1;
   }
 
+  // Void constructor
+  Mesh::Mesh() {}
+
   // Constructor from generic Face3D
   Mesh::Mesh(const std::vector<Face3D>& faces) {
     for (Face3D face : faces) {
@@ -56,12 +59,13 @@ namespace mesh{
     }
   }
 
-  // Constructor from PLY file
-  Mesh::Mesh(const std::string& filename) {
-
+  // Load from PLY file
+  void Mesh::load_ply(const std::string& filename) {
     std::ifstream file;
     file.open(filename);
     std::string line;
+    // Set fileformat
+    fileformat = "ply";
     // Read header
     std::getline(file, line);
     if (line != "ply") {
@@ -149,6 +153,64 @@ namespace mesh{
     file.close();
   }
 
+  void Mesh::load_off(const std::string& filename) {
+    std::ifstream file;
+    file.open(filename);
+    std::string line;
+    // Set fileformat
+    fileformat = "off";
+    // Read header
+    std::getline(file, line);
+    if (line != "OFF") {
+      std::cerr << "Invalid OFF file" << std::endl;
+      return;
+    }
+    // Read vertices and faces
+    int vertex_count, face_count, edge_count;
+    file >> vertex_count >> face_count >> edge_count;
+    // Read vertices
+    for (int i = 0; i < vertex_count; i++) {
+      double x, y, z;
+      file >> x >> y >> z;
+      vertices.push_back(Vertex3D(x, y, z));
+    }
+    // Read faces
+    for (int i = 0; i < face_count; i++) {
+      int vertex_count;
+      file >> vertex_count;
+      std::vector<int> vertex_ids;
+      for (int j = 0; j < vertex_count; j++) {
+        int vertex_id;
+        file >> vertex_id;
+        vertex_ids.push_back(vertex_id);
+      }
+      // Create face
+      MeshFace face;
+      face.vertices = vertex_ids;
+      face.r = 255;
+      face.g = 255;
+      face.b = 255;
+      faces.push_back(face);
+    }
+    // Close file
+    file.close();
+  }
+
+  // Build mesh from file
+  Mesh::Mesh(const std::string& filename) {
+    // Determine file format
+    std::string extension = filename.substr(filename.find_last_of(".") + 1);
+    if (extension == "ply") {
+      load_ply(filename);
+    }
+    else if (extension == "off") {
+      load_off(filename);
+    }
+    else {
+      std::cerr << "Invalid file format. Use PLY or OFF extension" << std::endl;
+    }
+  }
+
   // Generic getter for vertices
   std::vector<Vertex3D>& Mesh::get_vertices() {
     return vertices;
@@ -173,7 +235,7 @@ namespace mesh{
   }
 
   // === To PLY ===
-  std::string Mesh::get_header(bool texture_coordinates) {
+  std::string Mesh::get_ply_header(bool texture_coordinates) {
     std::string header = "ply\n";
     header += "format ascii 1.0\n";
     header += "element vertex " + std::to_string(vertices.size()) + "\n";
@@ -196,7 +258,7 @@ namespace mesh{
     return header;
   }
 
-  std::string Mesh::get_vertex_string(bool texture_coordinates) {
+  std::string Mesh::get_ply_vertex_string(bool texture_coordinates) {
     std::string vertex_string = "";
     for (Vertex3D vertex : vertices) {
       vertex_string += std::to_string(vertex.x) + " " + std::to_string(vertex.y) + " " + std::to_string(vertex.z);
@@ -208,7 +270,7 @@ namespace mesh{
     return vertex_string;
   }
 
-  std::string Mesh::get_face_string() {
+  std::string Mesh::get_ply_face_string() {
     std::string face_string = "";
     for (MeshFace face : faces) {
       face_string += std::to_string(face.vertices.size()) + " ";
@@ -225,11 +287,63 @@ namespace mesh{
   void Mesh::save_ply(const char* filename, bool texture_coordinates) {
     std::ofstream file;
     file.open(filename);
-    file << get_header(texture_coordinates);
-    file << get_vertex_string(texture_coordinates);
-    file << get_face_string();
+    file << get_ply_header(texture_coordinates);
+    file << get_ply_vertex_string(texture_coordinates);
+    file << get_ply_face_string();
     file.close();
   }
+
+  std::string Mesh::get_off_header() {
+    std::string header = "OFF\n";
+    header += std::to_string(vertices.size()) + " " + std::to_string(faces.size()) + " 0\n";
+    return header;
+  }
+
+  std::string Mesh::get_off_vertex_string() {
+    std::string vertex_string = "";
+    for (Vertex3D vertex : vertices) {
+      vertex_string += std::to_string(vertex.x) + " " + std::to_string(vertex.y) + " " + std::to_string(vertex.z) + "\n";
+    }
+    return vertex_string;
+  }
+
+  std::string Mesh::get_off_face_string() {
+    std::string face_string = "";
+    for (MeshFace face : faces) {
+      face_string += std::to_string(face.vertices.size()) + " ";
+      for (int vertex_id : face.vertices) {
+        face_string += std::to_string(vertex_id) + " ";
+      }
+      face_string += "\n";
+    }
+    return face_string;
+  }
+
+
+  void Mesh::save_off(const char* filename) {
+    std::ofstream file;
+    file.open(filename);
+    file << get_off_header();
+    file << get_off_vertex_string();
+    file << get_off_face_string();
+    file.close();
+  }
+
+  void Mesh::save(const char* filename) {
+    std::string f = filename;
+    // Determine file format
+    std::string extension = f.substr(f.find_last_of(".") + 1);
+    if (extension == "ply") {
+      save_ply(filename);
+    }
+    else if (extension == "off") {
+      save_off(filename);
+    }
+    else {
+      std::cerr << "Invalid file format. Use PLY or OFF extension" << std::endl;
+    }
+  }
+
 
   // === Query ===
   std::vector<Face3D> Mesh::get_faces_with_edge(const Edge3D& edge) {

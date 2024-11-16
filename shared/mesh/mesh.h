@@ -24,18 +24,29 @@ namespace mesh{
     std::vector<MeshVertex> vertices;
     std::vector<MeshFace> faces;
     std::string texture_file = "";
+    std::string fileformat = "ply";
 
 
-    std::string get_header( bool texture_coordinates );
-    std::string get_vertex_string( bool texture_coordinates );
-    std::string get_face_string();
+    std::string get_ply_header( bool texture_coordinates );
+    std::string get_ply_vertex_string( bool texture_coordinates );
+    std::string get_ply_face_string();
+
+    std::string get_off_header();
+    std::string get_off_vertex_string();
+    std::string get_off_face_string();
 
     Vertex3D to_vertex(const MeshVertex& vertex);
     Face3D to_face(const MeshFace& face);
+
+    void load_ply(const std::string& filename);
+    void load_off(const std::string& filename);
   public:
     Mesh(const std::vector<Face3D>& faces);
     Mesh(const std::string& filename);
+    Mesh();
     void save_ply(const char* filename, bool texture_coordinates = false);
+    void save_off(const char* filename);
+    void save(const char* filename);
 
     int insert_face(const Face3D& face);
     int insert_vertex(const Vertex3D& vertex);
