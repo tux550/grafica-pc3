@@ -7,8 +7,8 @@ TEST(exercise12, algo_painter_basic) {
   painter_algorithm_simple_cosine_illumination(
     "sample.ply",
     "output.ppm",
-    -10, -10, 10, 10,
-    400, 400
+    -1, -1, 1, 1,
+    800, 1200
   );
 }
 

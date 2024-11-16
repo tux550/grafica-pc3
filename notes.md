@@ -13,7 +13,7 @@
 [] Exercise 10 # OPTIONAL # Half implemented
 [~] Exercise 11 # Revisar firma de la función
 # Painter's algorithm
-[] Exercise 12
+[x] Exercise 12
 [] Exercise 13
 # Simple animation
 [] Exercise 14

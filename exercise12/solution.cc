@@ -34,15 +34,18 @@ size_t height_in_pixels) {
       // Get distance from the origin
       double distance = projection_plane.distance(face);
       // Calculate the cosine of the angle between the face normal and the vision vector
-      double cosine = -dot_product(face.get_normal(), light_direction) / distance;
+      double cosine = -dot_product(face.get_normal().normalized(), light_direction);
       // If negative, skip the face
       if (cosine < 0) {
         continue;
       }
       // Calculate the illumination
       double illumination = cosine * 255;
+      // Round up the illumination
+      int illumination_rounded = static_cast<int>(std::ceil(illumination));
+      
       // Add the face to the list
-      triangles_ilumination_distance.push_back(std::make_tuple(face2d.value(), face.r, illumination));
+      triangles_ilumination_distance.push_back(std::make_tuple(face2d.value(), illumination_rounded, distance));
     }
   }
 
