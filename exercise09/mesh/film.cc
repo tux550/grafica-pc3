@@ -234,11 +234,6 @@ namespace mesh {
     if (x_intersections.empty()) {
       return {1, 0};
     }
-    // If only one intersection, return it
-    if (x_intersections.size() == 1) {
-      return {snap_x_to_pixel(x_intersections[0]), snap_x_to_pixel(x_intersections[0])};
-    }
-
     // Find min and max x from the intersections
     double x_min = *std::min_element(x_intersections.begin(), x_intersections.end());
     double x_max = *std::max_element(x_intersections.begin(), x_intersections.end());
