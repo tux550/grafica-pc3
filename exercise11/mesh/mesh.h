@@ -65,6 +65,8 @@ namespace mesh{
     
     void set_texture_file(const std::string& filename);
     std::string get_source_format();
+
+    void rotate(Line3D& axis, double alpha_rads);
   };
 }
 

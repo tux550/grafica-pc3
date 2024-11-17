@@ -33,10 +33,7 @@ std::string const& filename_without_suffix_output_frames) {
   for (size_t i = 0; i < number_of_frames; i++) {
     //std::cout << "Frame " << i << std::endl;
     // Rotate the mesh
-    for (auto &vertex : mesh.get_vertices()){
-      vertex = mesh::rotate_vertex(vertex,  rotation_line, angle_step);
-    }
-
+    mesh.rotate(rotation_line, angle_step);
     // Create the output image
     std::string full_path_output_image = filename_without_suffix_output_frames + "-" + std::to_string(i) + ".png";
 

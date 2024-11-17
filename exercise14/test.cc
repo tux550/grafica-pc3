@@ -8,8 +8,11 @@ TEST(exercise14, sphere_rotation) {
     "sample.ply",
     "sample.png",
     // Rotate around the z-axis
-    0, 0, 0,
-    0, 0, 1, 
+    //0, 0, 0,
+    //0, 0, 1, 
+    // Rotate around self
+    0, 1, 10,
+    0, 1, 0,
     "frames/frame"
   );
 }
