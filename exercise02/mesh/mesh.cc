@@ -433,5 +433,7 @@ namespace mesh{
       auto v = rotate_vertex(vertex, axis, angle);
       new_vertices.push_back(v);
     }
+    // Set
+    vertices = new_vertices;
   }
 }
