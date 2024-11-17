@@ -58,9 +58,38 @@ namespace mesh{
 
   // Constructor from generic Face3D
   Mesh::Mesh(const std::vector<Face3D>& faces) {
+    // OPTIMIZED IMPLEMENTATION
+    // Create a map of vertices
+    std::map<Vertex3D, int> vertex_map;
     for (Face3D face : faces) {
-      insert_face(face);
+      for (Vertex3D vertex : face.vertices) {
+        // If the vertex is not in the map, add it
+        if (vertex_map.find(vertex) == vertex_map.end()) {
+          // Insert and register the vertex
+          size_t vertex_id = vertices.size();
+          vertices.push_back(vertex);
+          vertex_map[vertex] = vertex_id;
+        }
+      }
     }
+    // Create faces
+    for (Face3D face : faces) {
+      // Create face from map
+      MeshFace mesh_face;
+      for (Vertex3D vertex : face.vertices) {
+        mesh_face.vertices.push_back(vertex_map[vertex]);
+      }
+      // Set color
+      mesh_face.r = face.r;
+      mesh_face.g = face.g;
+      mesh_face.b = face.b;
+      // Add face to mesh
+      this->faces.push_back(mesh_face);
+    }
+    
+    //for (Face3D face : faces) {
+    //  insert_face(face);
+    //}
   }
 
   // Load from PLY file
