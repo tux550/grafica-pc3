@@ -426,14 +426,9 @@ namespace mesh{
   
   // Rotate
   void Mesh::rotate(Line3D& axis, double angle) {
-    auto original_vertices = vertices;
-    std::vector<Vertex3D> new_vertices;
-    for (Vertex3D& vertex : original_vertices) {
+    for (Vertex3D& vertex : vertices) {
       // Rotate around axis
-      auto v = rotate_vertex(vertex, axis, angle);
-      new_vertices.push_back(v);
+      vertex = rotate_vertex(vertex, axis, angle);
     }
-    // Set
-    vertices = new_vertices;
   }
 }

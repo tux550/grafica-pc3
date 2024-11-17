@@ -149,7 +149,6 @@ namespace mesh {
     for (size_t y = min_y_pixel; y <= max_y_pixel; y++) {
       auto [min_x_pixel, max_x_pixel] = compute_x_bounds_for_y(face, y);
       for (size_t x = min_x_pixel; x <= max_x_pixel; x++) {
-
         // Get the pixel center
         Point2D point = pixel_center({x, y});
         // Calculate barycentric coordinates
@@ -158,6 +157,12 @@ namespace mesh {
         Point2D v0p = point - face.vertices[0];
 
         double area = cross_product(v0v1, v0v2);
+
+        // Epsilon
+        if (area == 0) {
+          continue;
+        }
+
         double alpha = cross_product(v0v2, v0p) / area;
         double beta = cross_product(v0p, v0v1) / area;
         double gamma = 1 - alpha - beta;
@@ -166,11 +171,16 @@ namespace mesh {
         double u = alpha * face.vertices[0].u + beta * face.vertices[1].u + gamma * face.vertices[2].u;
         double v = alpha * face.vertices[0].v + beta * face.vertices[1].v + gamma * face.vertices[2].v;
 
+        // Limit u,v to [0, 1]
+        u = std::max(std::min(u, 1.0), 0.0);
+        v = std::max(std::min(v, 1.0), 0.0);
+
         // Get texture color
         size_t texture_x = u * texture.cols;
         size_t texture_y = v * texture.rows;
         cv::Vec3b color_cv = texture.at<cv::Vec3b>(texture_y, texture_x);
         RGB color = {color_cv[2], color_cv[1], color_cv[0]};
+
 
         // Apply ilumination
         color.r = static_cast<size_t>(color.r * ilumination);
