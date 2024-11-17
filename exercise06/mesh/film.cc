@@ -152,32 +152,27 @@ namespace mesh {
         // Get the pixel center
         Point2D point = pixel_center({x, y});
         // Calculate barycentric coordinates
-        Point2D v0v1 = face.vertices[1] - face.vertices[0];
-        Point2D v0v2 = face.vertices[2] - face.vertices[0];
-        Point2D v0p = point - face.vertices[0];
 
-        double area = cross_product(v0v1, v0v2);
-
-        // Epsilon
-        if (area == 0) {
+        // Assuming triangle
+        double area_total = (face.vertices[1].x - face.vertices[0].x) * (face.vertices[2].y - face.vertices[0].y) - (face.vertices[2].x - face.vertices[0].x) * (face.vertices[1].y - face.vertices[0].y);
+        if (area_total == 0) {
           continue;
         }
-
-        double alpha = cross_product(v0v2, v0p) / area;
-        double beta = cross_product(v0p, v0v1) / area;
+        double alpha = ((face.vertices[1].x - point.x) * (face.vertices[2].y - point.y) - (face.vertices[2].x - point.x) * (face.vertices[1].y - point.y)) / area_total;
+        double beta = ((face.vertices[2].x - point.x) * (face.vertices[0].y - point.y) - (face.vertices[0].x - point.x) * (face.vertices[2].y - point.y)) / area_total;
         double gamma = 1 - alpha - beta;
 
         // Get texture coordinates
-        double u = alpha * face.vertices[0].u + beta * face.vertices[1].u + gamma * face.vertices[2].u;
-        double v = alpha * face.vertices[0].v + beta * face.vertices[1].v + gamma * face.vertices[2].v;
+        double iu = alpha * face.vertices[0].u + beta * face.vertices[1].u + gamma * face.vertices[2].u;
+        double iv = alpha * face.vertices[0].v + beta * face.vertices[1].v + gamma * face.vertices[2].v;
 
         // Limit u,v to [0, 1]
-        u = std::max(std::min(u, 1.0), 0.0);
-        v = std::max(std::min(v, 1.0), 0.0);
+        double u = std::max(std::min(iu, 1.0), 0.0);
+        double v = std::max(std::min(iv, 1.0), 0.0);
 
         // Get texture color
-        size_t texture_x = u * texture.cols;
-        size_t texture_y = v * texture.rows;
+        size_t texture_x = u * (texture.cols-1);
+        size_t texture_y = v * (texture.rows-1);
         cv::Vec3b color_cv = texture.at<cv::Vec3b>(texture_y, texture_x);
         RGB color = {color_cv[2], color_cv[1], color_cv[0]};
 
