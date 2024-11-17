@@ -59,13 +59,19 @@ namespace mesh {
     double distance(Face3D & face);
     Point2D project(Vertex3D const& vertex) const;
     std::optional<Face2D> project(Face3D const& face) const;
+    size_t snap_y_to_pixel(double y) const;
+    size_t snap_x_to_pixel(double x) const;
     Pixel snap_to_pixel(Point2D const& point) const;
+    double y_center(size_t y) const;
     Point2D pixel_center(Pixel const& pixel) const;
     void draw_triangle(Face2D const& face, size_t ilumination);
     void draw_triangle_with_texture(Face2D const& face, double ilumination, cv::Mat const& texture);
 
     void save_ppm(std::string const& filename) const;
     void save_png(std::string const& filename) const;
+
+    // Compute x bounds for a given y in a triangle
+    std::tuple<size_t, size_t> compute_x_bounds_for_y(const Face2D& face, size_t y_pixel) ;
   };
 }
 #endif

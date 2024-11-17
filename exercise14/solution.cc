@@ -27,7 +27,7 @@ std::string const& filename_without_suffix_output_frames) {
   cv::Mat texture_image = cv::imread(full_path_input_texture, cv::IMREAD_COLOR);
 
   // Constants
-  const size_t number_of_frames = 20;
+  const size_t number_of_frames = 360;
   const double angle_step = 2 * M_PI / number_of_frames;
 
   for (size_t i = 0; i < number_of_frames; i++) {

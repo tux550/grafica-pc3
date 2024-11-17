@@ -70,16 +70,34 @@ namespace mesh {
     }
     return face2d;
   }
+
+  size_t ProjectionPlane::snap_y_to_pixel(double y) const {
+    double y_normalized = (y - min_y) / (max_y - min_y);
+    return static_cast<size_t>(y_normalized * height_in_pixels);
+  }
+
+  size_t ProjectionPlane::snap_x_to_pixel(double x) const {
+    double x_normalized = (x - min_x) / (max_x - min_x);
+    return static_cast<size_t>(x_normalized * width_in_pixels);
+  }
+
   Pixel ProjectionPlane::snap_to_pixel(Point2D const& point) const {
-    double x = ((point.x - min_x) / (max_x - min_x)) * width_in_pixels;
-    double y = ((point.y - min_y) / (max_y - min_y)) * height_in_pixels;
+    double x = snap_x_to_pixel(point.x);
+    double y = snap_y_to_pixel(point.y);
     return { static_cast<size_t>(x), static_cast<size_t>(y) };
   }
+
+
+
 
   Point2D ProjectionPlane::pixel_center(Pixel const& pixel) const {
     double x = min_x + (pixel.x + 0.5) * (max_x - min_x) / width_in_pixels;
     double y = min_y + (pixel.y + 0.5) * (max_y - min_y) / height_in_pixels;
     return {x, y};
+  }
+
+  double ProjectionPlane::y_center(size_t y) const {
+    return min_y + (y + 0.5) * (max_y - min_y) / height_in_pixels;
   }
 
   void ProjectionPlane::draw_triangle(Face2D const& face, size_t ilumination) {
@@ -114,56 +132,51 @@ namespace mesh {
     }
   }
 
-    void ProjectionPlane::draw_triangle_with_texture(Face2D const& face, double ilumination, cv::Mat const& texture) {
-    // Get bounding box
-    double b_min_x = min_x;
+  void ProjectionPlane::draw_triangle_with_texture(Face2D const& face, double ilumination, cv::Mat const& texture) {
+    // Get y-limits
     double b_min_y = min_y;
-    double b_max_x = max_x;
     double b_max_y = max_y;
     for (Point2D const& vertex : face.vertices) {
-      b_min_x = std::min(b_min_x, vertex.x);
       b_min_y = std::min(b_min_y, vertex.y);
-      b_max_x = std::max(b_max_x, vertex.x);
       b_max_y = std::max(b_max_y, vertex.y);
     }
+
     // Snap to pixels
-    Pixel min_pixel = snap_to_pixel({b_min_x, b_min_y});
-    Pixel max_pixel = snap_to_pixel({b_max_x, b_max_y});
-    // Limit to the screen
-    min_pixel.x = std::max(min_pixel.x, size_t(0));
-    min_pixel.y = std::max(min_pixel.y, size_t(0));
-    max_pixel.x = std::min(max_pixel.x, width_in_pixels - 1);
-    max_pixel.y = std::min(max_pixel.y, height_in_pixels - 1);
+    size_t min_y_pixel = std::max(snap_y_to_pixel(b_min_y), size_t(0));
+    size_t max_y_pixel = std::min(snap_y_to_pixel(b_max_y), height_in_pixels - 1);
 
-    // Draw the triangle
-    for (size_t x = min_pixel.x; x <= max_pixel.x; x++) {
-      for (size_t y = min_pixel.y; y <= max_pixel.y; y++) {
+    // Draw
+    for (size_t y = min_y_pixel; y <= max_y_pixel; y++) {
+      auto [min_x_pixel, max_x_pixel] = compute_x_bounds_for_y(face, y);
+      for (size_t x = min_x_pixel; x <= max_x_pixel; x++) {
+
+        // Get the pixel center
         Point2D point = pixel_center({x, y});
-        if (face.is_inside(point)) {
-          // Calculate barycentric coordinates
-          Point2D v0v1 = face.vertices[1] - face.vertices[0];
-          Point2D v0v2 = face.vertices[2] - face.vertices[0];
-          Point2D v0p = point - face.vertices[0];
+        // Calculate barycentric coordinates
+        Point2D v0v1 = face.vertices[1] - face.vertices[0];
+        Point2D v0v2 = face.vertices[2] - face.vertices[0];
+        Point2D v0p = point - face.vertices[0];
 
-          double area = cross_product(v0v1, v0v2);
-          double alpha = cross_product(v0v2, v0p) / area;
-          double beta = cross_product(v0p, v0v1) / area;
-          double gamma = 1 - alpha - beta;
+        double area = cross_product(v0v1, v0v2);
+        double alpha = cross_product(v0v2, v0p) / area;
+        double beta = cross_product(v0p, v0v1) / area;
+        double gamma = 1 - alpha - beta;
 
-          // Get texture coordinates
-          double u = alpha * face.vertices[0].u + beta * face.vertices[1].u + gamma * face.vertices[2].u;
-          double v = alpha * face.vertices[0].v + beta * face.vertices[1].v + gamma * face.vertices[2].v;
+        // Get texture coordinates
+        double u = alpha * face.vertices[0].u + beta * face.vertices[1].u + gamma * face.vertices[2].u;
+        double v = alpha * face.vertices[0].v + beta * face.vertices[1].v + gamma * face.vertices[2].v;
 
-          // Get texture color
-          size_t texture_x = u * texture.cols;
-          size_t texture_y = v * texture.rows;
-          cv::Vec3b color_cv = texture.at<cv::Vec3b>(texture_y, texture_x);
-          RGB color = {color_cv[2], color_cv[1], color_cv[0]};
+        // Get texture color
+        size_t texture_x = u * texture.cols;
+        size_t texture_y = v * texture.rows;
+        cv::Vec3b color_cv = texture.at<cv::Vec3b>(texture_y, texture_x);
+        RGB color = {color_cv[2], color_cv[1], color_cv[0]};
 
-          // Draw the pixel
-          image[x][y] = color;
-        }
+        // Draw the pixel
+        image[x][y] = color;
+        
       }
+
     }
   }
 
@@ -192,4 +205,49 @@ namespace mesh {
     cv::imwrite(filename, image_cv);
   }
 
+
+  
+  std::tuple<size_t, size_t> ProjectionPlane::compute_x_bounds_for_y(const Face2D& face, size_t y_pixel) {
+    std::vector<double> x_intersections;
+    double y = y_center(y_pixel);
+    for (size_t i = 0; i < face.vertices.size(); i++) {
+      const Point2D& p1 = face.vertices[i];
+      const Point2D& p2 = face.vertices[(i + 1) %  face.vertices.size()];
+      // Check if edge intersects the horizontal line at y
+      if ((y >= std::min(p1.y, p2.y)) && (y <= std::max(p1.y, p2.y))) {
+        // Avoid division by zero if the edge is horizontal
+        if (p1.y != p2.y) {
+          // Compute x-intersection
+          double t = (y - p1.y) / (p2.y - p1.y); // Interpolation factor
+          double x = p1.x + t * (p2.x - p1.x);
+          x_intersections.push_back(x);
+        } else {
+          // Horizontal edge: add both endpoints
+          x_intersections.push_back(p1.x);
+          x_intersections.push_back(p2.x);
+        }
+      }
+    }
+    // If empty, return invalid bounds
+    if (x_intersections.empty()) {
+      return {1, 0};
+    }
+    // If only one intersection, return it
+    if (x_intersections.size() == 1) {
+      return {snap_x_to_pixel(x_intersections[0]), snap_x_to_pixel(x_intersections[0])};
+    }
+
+    // Find min and max x from the intersections
+    double x_min = *std::min_element(x_intersections.begin(), x_intersections.end());
+    double x_max = *std::max_element(x_intersections.begin(), x_intersections.end());
+    // Snap to pixels
+    size_t x_min_pixel = snap_x_to_pixel(x_min);
+    size_t x_max_pixel = snap_x_to_pixel(x_max);
+
+    // Limit to the screen
+    x_min_pixel = std::max(x_min_pixel, size_t(0));
+    x_max_pixel = std::min(x_max_pixel, width_in_pixels - 1);
+
+    return {x_min_pixel, x_max_pixel};
+  }
 }
