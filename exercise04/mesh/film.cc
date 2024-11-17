@@ -102,28 +102,20 @@ namespace mesh {
 
   void ProjectionPlane::draw_triangle(Face2D const& face, size_t ilumination) {
     // Get bounding box
-    double b_min_x = min_x;
     double b_min_y = min_y;
-    double b_max_x = max_x;
     double b_max_y = max_y;
     for (Point2D const& vertex : face.vertices) {
-      b_min_x = std::min(b_min_x, vertex.x);
       b_min_y = std::min(b_min_y, vertex.y);
-      b_max_x = std::max(b_max_x, vertex.x);
       b_max_y = std::max(b_max_y, vertex.y);
     }
     // Snap to pixels
-    Pixel min_pixel = snap_to_pixel({b_min_x, b_min_y});
-    Pixel max_pixel = snap_to_pixel({b_max_x, b_max_y});
-    // Limit to the screen
-    min_pixel.x = std::max(min_pixel.x, size_t(0));
-    min_pixel.y = std::max(min_pixel.y, size_t(0));
-    max_pixel.x = std::min(max_pixel.x, width_in_pixels - 1);
-    max_pixel.y = std::min(max_pixel.y, height_in_pixels - 1);
-
+    size_t min_y_pixel = std::max(snap_y_to_pixel(b_min_y), size_t(0));
+    size_t max_y_pixel = std::min(snap_y_to_pixel(b_max_y), height_in_pixels - 1);
+    
     // Draw the triangle
-    for (size_t x = min_pixel.x; x <= max_pixel.x; x++) {
-      for (size_t y = min_pixel.y; y <= max_pixel.y; y++) {
+    for (size_t y = min_y_pixel; y <= max_y_pixel; y++) {
+      auto [min_x_pixel, max_x_pixel] = compute_x_bounds_for_y(face, y);
+      for (size_t x = min_x_pixel; x <= max_x_pixel; x++) {
         Point2D point = pixel_center({x, y});
         if (face.is_inside(point)) {
           image[x][y] = {ilumination, ilumination, ilumination};
