@@ -172,6 +172,11 @@ namespace mesh {
         cv::Vec3b color_cv = texture.at<cv::Vec3b>(texture_y, texture_x);
         RGB color = {color_cv[2], color_cv[1], color_cv[0]};
 
+        // Apply ilumination
+        color.r = static_cast<size_t>(color.r * ilumination);
+        color.g = static_cast<size_t>(color.g * ilumination);
+        color.b = static_cast<size_t>(color.b * ilumination);
+
         // Draw the pixel
         image[x][y] = color;
         

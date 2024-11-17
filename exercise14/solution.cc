@@ -31,7 +31,7 @@ std::string const& filename_without_suffix_output_frames) {
   const double angle_step = 2 * M_PI / number_of_frames;
 
   for (size_t i = 0; i < number_of_frames; i++) {
-    std::cout << "Frame " << i << std::endl;
+    //std::cout << "Frame " << i << std::endl;
     // Rotate the mesh
     for (auto &vertex : mesh.get_vertices()){
       vertex = mesh::rotate_vertex(vertex,  rotation_line, angle_step);
